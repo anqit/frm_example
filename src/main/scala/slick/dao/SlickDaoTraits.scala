@@ -1,19 +1,19 @@
 package slick.dao
 
 import model.{Id, Timestamps}
-import slick.SlickProfileProvider
 import slick.SlickProviders.SlickProfileProviderComponent
-import slick.schema.{QueryProviderComponent, SchemaTraits}
+import slick.schema.SchemaTraits
 
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.reflect.ClassTag
 
-trait SlickDaoTraits { self: SlickProfileProviderComponent with SchemaTraits with QueryProviderComponent =>
+trait SlickDaoTraits { self: SlickProfileProviderComponent with SchemaTraits =>
     private val profile = profileProvider.profile
     import profile.api._
 
-    trait SlickIdDao[E <: Id[E]] { self: QueryProvider[_ <: Table[E] with IdColumns[E]] =>
+    trait SlickIdDao[E <: Id[E]] { self: QueryProviderComponent[_ <: Table[E] with IdColumns[E]] =>
+        val query = queryProvider.query
         def createAction(entity: E)(implicit tpe: ClassTag[E]): DBIOAction[Option[E], NoStream, Effect.Write] =
             ((query returning query.map(_.id) into ((e, id) => e.withId(id))) += entity) map {
                 case eid: E => Some(eid)
@@ -36,7 +36,8 @@ trait SlickDaoTraits { self: SlickProfileProviderComponent with SchemaTraits wit
             }
     }
 
-    trait SlickTimestampDao[E <: Timestamps[E]] { self: QueryProvider[_ <: Table[E] with TimestampColumns[E]] =>
+    trait SlickTimestampDao[E <: Timestamps[E]] { self: QueryProviderComponent[_ <: Table[E] with TimestampColumns[E]] =>
+        val query = queryProvider.query
         def stampCreated(e: E) = {
             val now = Instant.now()
             e.withCreatedAt(now).withUpdatedAt(now)

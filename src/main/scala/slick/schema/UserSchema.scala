@@ -20,12 +20,11 @@ trait UserSchema { self: SlickProfileProviderComponent with SchemaTraits =>
 
     val users = TableQuery[Users]
 
-    trait UserQueryProviderComponent extends QueryProviderComponent with SlickProfileProviderComponent {
-        def queryProvider = new QueryProvider[Users] {
-            override def query = users
-        }
 
-        class UserQueryProvider extends QueryProvider[Users] {
+    val userQueryProviderComponent = new QueryProviderComponent[Users] {
+        def queryProvider = new UserQueryProvider
+
+        class UserQueryProvider extends QueryProvider {
             override def query = users
         }
     }

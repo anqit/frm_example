@@ -25,4 +25,12 @@ trait AddressSchema { self: SlickProfileProviderComponent with SchemaTraits with
     }
 
     val addresses = TableQuery[Addresses]
+
+    val addressQueryProvider = new QueryProviderComponent[Addresses] {
+        def queryProvider = new AddressQueryProvider
+
+        class AddressQueryProvider extends QueryProvider {
+            override def query = addresses
+        }
+    }
 }

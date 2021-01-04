@@ -13,7 +13,7 @@ object SlickProviders {
 
     trait SlickDatabaseProviderComponent {
         self: SlickProfileProviderComponent =>
-        val profile = profileProvider.profile
+        private val profile = profileProvider.profile
 
         import profile.api._
 

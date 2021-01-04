@@ -23,10 +23,7 @@ trait SchemaTraits {
         def updatedAt = column[Instant]("updated_at")
     }
 
-    trait QueryProviderComponent[T <: Table [_]] { self: SlickProfileProviderComponent =>
-        private val profile = profileProvider.profile
-        import profile.api._
-
+    trait QueryProviderComponent[T <: Table [_]] {
         def queryProvider: QueryProvider
 
         trait QueryProvider {
