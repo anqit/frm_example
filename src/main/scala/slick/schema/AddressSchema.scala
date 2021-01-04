@@ -1,14 +1,14 @@
 package slick.schema
 
 import model.Address
-import slick.SlickProfileProvider
+import slick.SlickProviders.SlickProfileProviderComponent
 
 import java.time.Instant
 
-trait AddressSchema { self: SlickProfileProvider with SchemaTraits with UserSchema =>
+trait AddressSchema { self: SlickProfileProviderComponent with SchemaTraits with UserSchema =>
     import profile.api._
 
-    case class LiftedAddress(number: Rep[Int], street: Rep[String], createdAt: Rep[Instant], updatedAt: Rep[Instant], userId: Rep[Int], id: Rep[Option[Int]])
+    case class LiftedAddress(number: Rep[Int], street: Rep[String], createdAt: Rep[Instant], updatedAt: Rep[Instant], ownerId: Rep[Int], id: Rep[Option[Int]])
 
     implicit object AddressShape extends CaseClassShape(LiftedAddress.tupled, Address.tupled)
 
@@ -17,16 +17,12 @@ trait AddressSchema { self: SlickProfileProvider with SchemaTraits with UserSche
 
         def number = column[Int]("number")
         def street = column[String]("street")
-        def userId = column[Int]("user_id")
+        def ownerId = column[Int]("owner_id")
 
-        def user = foreignKey("address_user_fk", userId, users)(_.id)
+        def user = foreignKey("address_user_fk", ownerId, users)(_.id)
 
-        def * = LiftedAddress(number, street, createdAt, updatedAt, userId, id.?)
+        def * = LiftedAddress(number, street, createdAt, updatedAt, ownerId, id.?)
     }
 
     val addresses = TableQuery[Addresses]
-
-    val addressQueryProvider = new QueryProvider[Addresses] {
-        def query = addresses
-    }
 }

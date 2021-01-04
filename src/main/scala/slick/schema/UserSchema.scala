@@ -1,9 +1,10 @@
 package slick.schema
 
 import model.User
-import slick.SlickProfileProvider
+import slick.SlickProviders.SlickProfileProviderComponent
 
-trait UserSchema { self: SlickProfileProvider with SchemaTraits =>
+trait UserSchema { self: SlickProfileProviderComponent with SchemaTraits =>
+    val profile = profileProvider.profile
     import profile.api._
 
     case class LiftedUser(name: Rep[String], id: Rep[Option[Int]])
@@ -19,7 +20,13 @@ trait UserSchema { self: SlickProfileProvider with SchemaTraits =>
 
     val users = TableQuery[Users]
 
-    val userQueryProvider = new QueryProvider[Users] {
-        def query = users
+    trait UserQueryProviderComponent extends QueryProviderComponent with SlickProfileProviderComponent {
+        def queryProvider = new QueryProvider[Users] {
+            override def query = users
+        }
+
+        class UserQueryProvider extends QueryProvider[Users] {
+            override def query = users
+        }
     }
 }

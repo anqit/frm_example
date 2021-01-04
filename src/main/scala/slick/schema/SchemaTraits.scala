@@ -1,18 +1,15 @@
 package slick.schema
 
 import model.{Id, Timestamps}
-import slick.SlickProfileProvider
+import slick.SlickProviders.SlickProfileProviderComponent
 
 import java.time.Instant
 
 trait SchemaTraits {
-    self: SlickProfileProvider =>
+    self: SlickProfileProviderComponent =>
 
+    private val profile = profileProvider.profile
     import profile.api._
-
-    trait QueryProvider[T <: Table[_]] {
-        def query: TableQuery[_ <: T]
-    }
 
     trait IdColumns[E <: Id[E]] {
         self: Table[E] =>
@@ -26,4 +23,14 @@ trait SchemaTraits {
         def updatedAt = column[Instant]("updated_at")
     }
 
+    trait QueryProviderComponent[T <: Table [_]] { self: SlickProfileProviderComponent =>
+        private val profile = profileProvider.profile
+        import profile.api._
+
+        def queryProvider: QueryProvider
+
+        trait QueryProvider {
+            def query: TableQuery[_ <: T]
+        }
+    }
 }
