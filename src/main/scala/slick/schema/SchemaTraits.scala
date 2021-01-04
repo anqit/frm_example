@@ -1,14 +1,12 @@
 package slick.schema
 
 import model.{Id, Timestamps}
-import slick.SlickProviders.SlickProfileProviderComponent
+import slick.SlickProviders.SlickProfileProvider
 
 import java.time.Instant
 
 trait SchemaTraits {
-    self: SlickProfileProviderComponent =>
-
-    private val profile = profileProvider.profile
+    self: SlickProfileProvider =>
     import profile.api._
 
     trait IdColumns[E <: Id[E]] {

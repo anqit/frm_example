@@ -1,15 +1,14 @@
 package slick.dao
 
 import model.{Id, Timestamps}
-import slick.SlickProviders.SlickProfileProviderComponent
+import slick.SlickProviders.SlickProfileProvider
 import slick.schema.SchemaTraits
 
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.reflect.ClassTag
 
-trait SlickDaoTraits { self: SlickProfileProviderComponent with SchemaTraits =>
-    private val profile = profileProvider.profile
+trait SlickDaoTraits { self: SlickProfileProvider with SchemaTraits =>
     import profile.api._
 
     trait SlickIdDao[E <: Id[E]] { self: QueryProviderComponent[_ <: Table[E] with IdColumns[E]] =>

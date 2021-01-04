@@ -1,11 +1,12 @@
 package slick.schema
 
 import model.Address
-import slick.SlickProviders.SlickProfileProviderComponent
+import slick.SlickProviders.SlickProfileProvider
+import slick.dao.SlickDaoTraits
 
 import java.time.Instant
 
-trait AddressSchema { self: SlickProfileProviderComponent with SchemaTraits with UserSchema =>
+trait AddressSchema { self: SlickProfileProvider with SchemaTraits with UserSchema with SlickDaoTraits =>
     import profile.api._
 
     case class LiftedAddress(number: Rep[Int], street: Rep[String], createdAt: Rep[Instant], updatedAt: Rep[Instant], ownerId: Rep[Int], id: Rep[Option[Int]])
@@ -26,11 +27,14 @@ trait AddressSchema { self: SlickProfileProviderComponent with SchemaTraits with
 
     val addresses = TableQuery[Addresses]
 
-    val addressQueryProvider = new QueryProviderComponent[Addresses] {
+    trait AddressQueryProvider extends QueryProviderComponent[Addresses] {
         def queryProvider = new AddressQueryProvider
 
         class AddressQueryProvider extends QueryProvider {
             override def query = addresses
         }
     }
+
+    //  TODO: maybe something like this
+    //    trait AddressDao extends AddressDao with AddressQueryProvider with SlickIdDao[Address] with SlickTimestampDao[Address]
 }
