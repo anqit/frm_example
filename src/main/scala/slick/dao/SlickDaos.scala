@@ -9,7 +9,7 @@ import java.time.Instant
 import scala.concurrent.Future
 
 trait SlickDaos { self: SlickDatabaseProvider with SchemaTraits with SlickDaoTraits with UserSchema with AddressSchema =>
-    trait SlickUserDao extends UserDao with SlickIdDao[User] with UserQueryProviderComponent {
+    trait SlickUserDao extends UserDao with SlickIdDao[User] with UserQueryProvider {
         def create(u: User): Future[Option[User]] = db.run(createAction(u))
         def getById(id: Int): Future[Option[User]] = db.run(getByIdAction(id))
         def updateById(u: User): Future[Option[User]] = db.run(updateByIdAction(u))

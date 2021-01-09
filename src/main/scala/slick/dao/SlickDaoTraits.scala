@@ -11,8 +11,7 @@ import scala.reflect.ClassTag
 trait SlickDaoTraits { self: SlickProfileProvider with SchemaTraits =>
     import profile.api._
 
-    trait SlickIdDao[E <: Id[E]] { self: QueryProviderComponent[_ <: Table[E] with IdColumns[E]] =>
-        val query = queryProvider.query
+    trait SlickIdDao[E <: Id[E]] { self: QueryProvider[_ <: Table[E] with IdColumns[E]] =>
         def createAction(entity: E)(implicit tpe: ClassTag[E]): DBIOAction[Option[E], NoStream, Effect.Write] =
             ((query returning query.map(_.id) into ((e, id) => e.withId(id))) += entity) map {
                 case eid: E => Some(eid)
@@ -35,8 +34,7 @@ trait SlickDaoTraits { self: SlickProfileProvider with SchemaTraits =>
             }
     }
 
-    trait SlickTimestampDao[E <: Timestamps[E]] { self: QueryProviderComponent[_ <: Table[E] with TimestampColumns[E]] =>
-        val query = queryProvider.query
+    trait SlickTimestampDao[E <: Timestamps[E]] { self: QueryProvider[_ <: Table[E] with TimestampColumns[E]] =>
         def stampCreated(e: E) = {
             val now = Instant.now()
             e.withCreatedAt(now).withUpdatedAt(now)

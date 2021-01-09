@@ -21,11 +21,8 @@ trait SchemaTraits {
         def updatedAt = column[Instant]("updated_at")
     }
 
-    trait QueryProviderComponent[T <: Table [_]] {
-        def queryProvider: QueryProvider
+    trait QueryProvider[T <: Table [_]] {
+        def query: TableQuery[_ <: T]
 
-        trait QueryProvider {
-            def query: TableQuery[_ <: T]
-        }
     }
 }

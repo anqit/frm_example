@@ -1,0 +1,12 @@
+local = {
+  connectionPool = ""
+  dataSourceClass = ""
+  properties = {
+    serverName = ""
+    portNumber = ""
+    databaseName = ""
+    user = ""
+    password = ""
+  }
+  numThreads = ?
+}
